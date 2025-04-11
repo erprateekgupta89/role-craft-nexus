@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,8 +9,14 @@ import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login, isLoading, error } = useAuth();
-  const [isAzureLoading, setIsAzureLoading] = useState(false);
+  const { login, isLoading, error, user } = useAuth();
+
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleLogin = async () => {
     await login();
@@ -41,6 +47,13 @@ const LoginPage = () => {
             </Alert>
           )}
           
+          <Alert>
+            <AlertTitle>Development Mode</AlertTitle>
+            <AlertDescription>
+              Auto-login as MR role user is enabled. You will be redirected shortly...
+            </AlertDescription>
+          </Alert>
+          
           <Button
             className="w-full bg-[#0078d4] hover:bg-[#106ebe]"
             onClick={handleLogin}
@@ -67,7 +80,7 @@ const LoginPage = () => {
         <CardFooter className="flex flex-col space-y-4">
           <div className="text-center text-sm text-muted-foreground">
             <p>
-              Sign in with your Microsoft account to access RoleCraft Nexus.
+              Auto-login is enabled for development purposes.
             </p>
           </div>
         </CardFooter>

@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContextProps, AuthState, User } from '@/types/auth';
@@ -18,56 +17,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [state, setState] = useState<AuthState>(initialState);
   const navigate = useNavigate();
 
-  // Check if user is already logged in
+  // Auto-login as MR user for development
   useEffect(() => {
-    const checkAuth = async () => {
+    const autoLogin = async () => {
       try {
-        // Set up auth state change listener
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-          (event, session) => {
-            if (session) {
-              const user: User = {
-                id: session.user.id,
-                name: session.user.user_metadata.name || 'User',
-                email: session.user.email || '',
-                role: session.user.user_metadata.role || 'PM',
-                image: session.user.user_metadata.avatar_url || null,
-              };
-              setState({ user, isLoading: false, error: null });
-            } else {
-              setState({ user: null, isLoading: false, error: null });
-            }
-          }
-        );
-
-        // Check for existing session
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (session) {
-          const user: User = {
-            id: session.user.id,
-            name: session.user.user_metadata.name || 'User',
-            email: session.user.email || '',
-            role: session.user.user_metadata.role || 'PM',
-            image: session.user.user_metadata.avatar_url || null,
-          };
-          setState({ user, isLoading: false, error: null });
-        } else {
-          setState({ ...state, isLoading: false });
-        }
-
-        return () => {
-          subscription.unsubscribe();
+        // Create a dummy MR user for development purposes
+        const mrUser: User = {
+          id: 'mr-test-user-id',
+          name: 'Test MR User',
+          email: 'mr-test@example.com',
+          role: 'MR',
+          image: null,
         };
+        
+        setState({
+          user: mrUser,
+          isLoading: false,
+          error: null
+        });
+        
+        // Redirect to dashboard after auto-login
+        if (window.location.pathname === '/login') {
+          navigate('/dashboard');
+        }
       } catch (error) {
         setState({ user: null, isLoading: false, error: error as Error });
       }
     };
 
-    checkAuth();
-  }, []);
+    // Call auto-login
+    autoLogin();
+    
+    // Return empty cleanup function to satisfy useEffect
+    return () => {};
+  }, [navigate]);
 
-  // Azure AD login
+  // Keep the original login method for future use
   const login = async () => {
     try {
       setState({ ...state, isLoading: true });
@@ -98,10 +83,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setState({ ...state, isLoading: true });
       
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      
+      // For the bypassed login, we just reset the state
       setState({ user: null, isLoading: false, error: null });
+      
       toast({
         title: "Logged out",
         description: "You have been logged out successfully.",
