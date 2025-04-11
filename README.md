@@ -33,6 +33,22 @@ src/
 └── types/            # TypeScript types
 ```
 
+## Database Schema
+
+The application uses a PostgreSQL database with the following tables:
+
+- **users**: Stores user information with role-based access control
+- **projects**: Contains project details including management roles and delivery models
+- **team_members**: Associates team members with projects
+- **access_matrix**: Defines access rights to assets for users
+- **software_utilities**: Tracks software used in projects
+- **security_checklist**: Security requirements for projects
+- **custom_checklists**: Custom project checklists
+- **pac_approval_history**: Project Approval Cycle history
+- **pac_versions**: Tracks sealed/approved project versions
+
+Database schema and seed data can be found in `src/services/database-schema.sql` and `src/services/database-seed.sql`.
+
 ## Available Roles
 
 The application supports the following user roles:
@@ -65,7 +81,10 @@ This project is designed to work with the Supabase native integration in Lovable
 
 1. Click the green Supabase button in the top right of the Lovable interface
 2. Connect to your Supabase project or create a new one
-3. Once connected, the application will have access to:
+3. Once connected, run the database setup SQL files:
+   - First run `src/services/database-schema.sql` to create the tables
+   - Then run `src/services/database-seed.sql` to populate with sample data
+4. The application will now have access to:
    - Database tables
    - Authentication
    - Storage
