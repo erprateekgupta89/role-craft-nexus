@@ -1,7 +1,7 @@
 
 # RoleCraft Nexus
 
-A full-stack project management application with role-based access control, built with React and TypeScript.
+A full-stack project management application with role-based access control, built with React, TypeScript, and Supabase.
 
 ## Tech Stack
 
@@ -12,9 +12,10 @@ A full-stack project management application with role-based access control, buil
 - shadcn/ui component library
 - Tanstack Query for data fetching and caching
 
-### Backend (Integration Ready)
+### Backend
 - Supabase for database, authentication and backend services
-- Azure AD OAuth integration (via next-auth)
+- PostgreSQL database
+- Row-Level Security (RLS) policies for data protection
 
 ## Project Structure
 
@@ -30,7 +31,8 @@ src/
 ├── lib/              # Utility functions
 ├── pages/            # Page components
 ├── services/         # API services
-└── types/            # TypeScript types
+├── types/            # TypeScript types
+└── integrations/     # External service integrations
 ```
 
 ## Database Schema
@@ -46,8 +48,6 @@ The application uses a PostgreSQL database with the following tables:
 - **custom_checklists**: Custom project checklists
 - **pac_approval_history**: Project Approval Cycle history
 - **pac_versions**: Tracks sealed/approved project versions
-
-Database schema and seed data can be found in `src/services/database-schema.sql` and `src/services/database-seed.sql`.
 
 ## Available Roles
 
@@ -71,32 +71,25 @@ Each role has customized views and permissions throughout the application.
 
 Copy `.env.example` to `.env` and fill in the required values:
 
-- Azure AD credentials for authentication
 - Supabase URL and anonymous key for backend services
-- Additional configuration for the NestJS backend (if deploying separately)
-
-## Connecting to Supabase
-
-This project is designed to work with the Supabase native integration in Lovable. To set up the integration:
-
-1. Click the green Supabase button in the top right of the Lovable interface
-2. Connect to your Supabase project or create a new one
-3. Once connected, run the database setup SQL files:
-   - First run `src/services/database-schema.sql` to create the tables
-   - Then run `src/services/database-seed.sql` to populate with sample data
-4. The application will now have access to:
-   - Database tables
-   - Authentication
-   - Storage
-   - API functions
 
 ## Features
 
-- Role-based access control with Azure AD authentication
+- Role-based access control
 - Project management with task tracking
 - Team collaboration tools
 - Reporting and analytics
 - Responsive design for all devices
+
+## Acknowledgments
+
+This project uses the following open source libraries:
+- [React](https://reactjs.org/) - UI library
+- [shadcn/ui](https://ui.shadcn.com/) - UI component library
+- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
+- [Supabase](https://supabase.com/) - Backend as a Service
+- [Tanstack Query](https://tanstack.com/query) - Data fetching library
+- [Lucide React](https://lucide.dev/) - Icon library
 
 ## License
 

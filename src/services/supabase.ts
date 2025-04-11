@@ -1,8 +1,9 @@
 
-import { createClient } from '@supabase/supabase-js';
+// Import the official Supabase client from our integrations folder
+import { supabase } from '@/integrations/supabase/client';
 
-// Initialize Supabase client
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+// Export the client for use throughout the application
+export { supabase };
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// This file serves as a re-export of the Supabase client
+// to maintain compatibility with existing code
