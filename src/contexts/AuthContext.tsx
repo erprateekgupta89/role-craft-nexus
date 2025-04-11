@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AuthContextProps, AuthState, User } from '@/types/auth';
 import { toast } from '@/hooks/use-toast';
 
@@ -53,7 +53,7 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<AuthState>(initialState);
-  const router = useRouter();
+  const navigate = useNavigate();
 
   // Check if user is already logged in
   useEffect(() => {
@@ -91,7 +91,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         title: "Login successful",
         description: `Welcome back, ${randomUser.name}!`,
       });
-      router.navigate('/dashboard');
+      navigate('/dashboard');
     } catch (error) {
       setState({ user: null, isLoading: false, error: error as Error });
       toast({
@@ -114,7 +114,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         title: "Logged out",
         description: "You have been logged out successfully.",
       });
-      router.navigate('/');
+      navigate('/');
     } catch (error) {
       setState({ ...state, isLoading: false, error: error as Error });
       toast({
