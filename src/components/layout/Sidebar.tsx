@@ -12,6 +12,9 @@ import {
   Calendar,
   Book,
   UserCircle,
+  Shield,
+  Layers,
+  FolderKanban
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Role } from '@/types/auth';
@@ -45,6 +48,24 @@ export const Sidebar = () => {
       href: '/projects',
       icon: <FileText className="h-5 w-5" />,
       roles: ['PM', 'PoM', 'AVP', 'VP'],
+    },
+    {
+      title: 'Submit PAC',
+      href: '/pac/new',
+      icon: <Shield className="h-5 w-5" />,
+      roles: ['PM'],
+    },
+    {
+      title: 'PAC Review',
+      href: '/pac/list',
+      icon: <Layers className="h-5 w-5" />,
+      roles: ['PoM', 'AVP', 'VP', 'MR'],
+    },
+    {
+      title: 'PAC History',
+      href: '/pac/history',
+      icon: <FolderKanban className="h-5 w-5" />,
+      roles: ['PM', 'PoM', 'AVP', 'VP', 'MR'],
     },
     {
       title: 'Tasks',

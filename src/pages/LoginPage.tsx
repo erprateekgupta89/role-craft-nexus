@@ -16,16 +16,6 @@ const LoginPage = () => {
     await login();
   };
 
-  const handleAzureLogin = async () => {
-    setIsAzureLoading(true);
-    // This would redirect to Azure AD OAuth flow in production
-    // For now we'll simulate with a delay and use our mock login
-    setTimeout(async () => {
-      await login();
-      setIsAzureLoading(false);
-    }, 1500);
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <Card className="w-full max-w-md">
@@ -53,10 +43,10 @@ const LoginPage = () => {
           
           <Button
             className="w-full bg-[#0078d4] hover:bg-[#106ebe]"
-            onClick={handleAzureLogin}
-            disabled={isAzureLoading || isLoading}
+            onClick={handleLogin}
+            disabled={isLoading}
           >
-            {isAzureLoading || isLoading ? (
+            {isLoading ? (
               <div className="flex items-center">
                 <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -77,18 +67,8 @@ const LoginPage = () => {
         <CardFooter className="flex flex-col space-y-4">
           <div className="text-center text-sm text-muted-foreground">
             <p>
-              This is a demo application. Select any role to log in.
+              Sign in with your Microsoft account to access RoleCraft Nexus.
             </p>
-          </div>
-          <div className="flex flex-wrap gap-2 justify-center">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleLogin}
-              disabled={isLoading}
-            >
-              Login as Random User
-            </Button>
           </div>
         </CardFooter>
       </Card>

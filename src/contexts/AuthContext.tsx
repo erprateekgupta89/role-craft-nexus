@@ -3,46 +3,9 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContextProps, AuthState, User } from '@/types/auth';
 import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
-// Mock user data - this would come from your auth provider in production
-const mockUsers: User[] = [
-  {
-    id: '1',
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John',
-    role: 'PM',
-  },
-  {
-    id: '2',
-    name: 'Jane Smith',
-    email: 'jane.smith@example.com',
-    image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jane',
-    role: 'PoM',
-  },
-  {
-    id: '3',
-    name: 'Michael Johnson',
-    email: 'michael.johnson@example.com',
-    image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michael',
-    role: 'AVP',
-  },
-  {
-    id: '4',
-    name: 'Emily Brown',
-    email: 'emily.brown@example.com',
-    image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emily',
-    role: 'VP',
-  },
-  {
-    id: '5',
-    name: 'Robert Wilson',
-    email: 'robert.wilson@example.com',
-    image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Robert',
-    role: 'MR',
-  }
-];
-
+// Default state for authentication
 const initialState: AuthState = {
   user: null,
   isLoading: true,
@@ -59,13 +22,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-          const user = JSON.parse(storedUser);
+        // Set up auth state change listener
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          (event, session) => {
+            if (session) {
+              const user: User = {
+                id: session.user.id,
+                name: session.user.user_metadata.name || 'User',
+                email: session.user.email || '',
+                role: session.user.user_metadata.role || 'PM',
+                image: session.user.user_metadata.avatar_url || null,
+              };
+              setState({ user, isLoading: false, error: null });
+            } else {
+              setState({ user: null, isLoading: false, error: null });
+            }
+          }
+        );
+
+        // Check for existing session
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session) {
+          const user: User = {
+            id: session.user.id,
+            name: session.user.user_metadata.name || 'User',
+            email: session.user.email || '',
+            role: session.user.user_metadata.role || 'PM',
+            image: session.user.user_metadata.avatar_url || null,
+          };
           setState({ user, isLoading: false, error: null });
         } else {
           setState({ ...state, isLoading: false });
         }
+
+        return () => {
+          subscription.unsubscribe();
+        };
       } catch (error) {
         setState({ user: null, isLoading: false, error: error as Error });
       }
@@ -74,29 +67,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuth();
   }, []);
 
-  // Mock login functionality - replace with actual Azure AD auth in production
+  // Azure AD login
   const login = async () => {
     try {
       setState({ ...state, isLoading: true });
       
-      // In production, this would be replaced with actual Azure AD OAuth flow
-      // For now, we'll simulate a login with a random user from our mock data
-      const randomUser = mockUsers[Math.floor(Math.random() * mockUsers.length)];
-      
-      // Store user in local storage for persistence
-      localStorage.setItem('user', JSON.stringify(randomUser));
-      
-      setState({ user: randomUser, isLoading: false, error: null });
-      toast({
-        title: "Login successful",
-        description: `Welcome back, ${randomUser.name}!`,
+      // In production, this would use Azure AD provider
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'azure',
+        options: {
+          scopes: 'email profile',
+          redirectTo: `${window.location.origin}/dashboard`
+        }
       });
-      navigate('/dashboard');
+      
+      if (error) throw error;
+      
+      // The redirection will happen automatically
     } catch (error) {
       setState({ user: null, isLoading: false, error: error as Error });
       toast({
         title: "Login failed",
-        description: "There was a problem with your login.",
+        description: (error as Error).message || "There was a problem with your login.",
         variant: "destructive",
       });
     }
@@ -106,8 +98,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setState({ ...state, isLoading: true });
       
-      // Clear user from local storage
-      localStorage.removeItem('user');
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
       
       setState({ user: null, isLoading: false, error: null });
       toast({

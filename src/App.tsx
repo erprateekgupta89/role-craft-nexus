@@ -10,11 +10,19 @@ import Index from "./pages/Index";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import PacSubmissionPage from "./pages/PacSubmissionPage";
+import PacReviewPage from "./pages/PacReviewPage";
 
 const queryClient = new QueryClient();
 
-// Protected route component
-const ProtectedRoute = ({ element }: { element: JSX.Element }) => {
+// Protected route component with role-based access control
+const ProtectedRoute = ({ 
+  element, 
+  allowedRoles 
+}: { 
+  element: JSX.Element;
+  allowedRoles?: string[]; 
+}) => {
   const { user, isLoading } = useAuth();
   
   // If auth is still loading, show a loading indicator
@@ -27,7 +35,12 @@ const ProtectedRoute = ({ element }: { element: JSX.Element }) => {
     return <Navigate to="/login" replace />;
   }
   
-  // If user is logged in, render the protected component
+  // If roles are specified and user doesn't have permission, redirect to dashboard
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  
+  // If user is logged in and has permission, render the protected component
   return element;
 };
 
@@ -37,10 +50,30 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/login" element={<LoginPage />} />
+      
+      {/* Dashboard - accessible by all authenticated users */}
       <Route
         path="/dashboard"
         element={<ProtectedRoute element={<Layout><DashboardPage /></Layout>} />}
       />
+      
+      {/* PAC Submission - accessible by PMs */}
+      <Route
+        path="/pac/new"
+        element={<ProtectedRoute 
+          element={<Layout><PacSubmissionPage /></Layout>} 
+          allowedRoles={['PM']}
+        />}
+      />
+      
+      {/* PAC Review - accessible by all roles */}
+      <Route
+        path="/pac/:pacId"
+        element={<ProtectedRoute 
+          element={<Layout><PacReviewPage /></Layout>}
+        />}
+      />
+      
       {/* Add more protected routes with the same pattern */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
