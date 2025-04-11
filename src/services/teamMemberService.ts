@@ -22,32 +22,32 @@ export async function getTeamMembersByProjectId(projectId: string): Promise<Team
     
   if (error) throw new Error(error.message);
   
-  return data as unknown as TeamMember[];
+  return data as TeamMember[];
 }
 
 export async function addTeamMember(teamMember: Omit<TeamMember, 'id' | 'created_at' | 'updated_at'>): Promise<TeamMember> {
   const { data, error } = await supabase
     .from('team_members')
-    .insert([teamMember as any]) // Cast to any to avoid type issues
+    .insert([teamMember])
     .select()
     .single();
     
   if (error) throw new Error(error.message);
   
-  return data as unknown as TeamMember;
+  return data as TeamMember;
 }
 
 export async function updateTeamMember(id: string, updates: Partial<Omit<TeamMember, 'id' | 'created_at' | 'updated_at'>>): Promise<TeamMember> {
   const { data, error } = await supabase
     .from('team_members')
-    .update(updates as any) // Cast to any to avoid type issues
+    .update(updates)
     .eq('id', id)
     .select()
     .single();
     
   if (error) throw new Error(error.message);
   
-  return data as unknown as TeamMember;
+  return data as TeamMember;
 }
 
 export async function deleteTeamMember(id: string): Promise<void> {

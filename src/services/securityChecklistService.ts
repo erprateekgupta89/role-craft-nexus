@@ -23,30 +23,30 @@ export async function getSecurityChecklistByProjectId(projectId: string): Promis
     
   if (error) throw new Error(error.message);
   
-  return data as unknown as SecurityChecklistItem[];
+  return data as SecurityChecklistItem[];
 }
 
 export async function updateSecurityChecklistItem(id: string, updates: Partial<Pick<SecurityChecklistItem, 'status' | 'remarks'>>): Promise<SecurityChecklistItem> {
   const { data, error } = await supabase
     .from('security_checklist')
-    .update(updates as any) // Cast to any to avoid type issues
+    .update(updates)
     .eq('id', id)
     .select()
     .single();
     
   if (error) throw new Error(error.message);
   
-  return data as unknown as SecurityChecklistItem;
+  return data as SecurityChecklistItem;
 }
 
 export async function addSecurityChecklistItem(item: Omit<SecurityChecklistItem, 'id' | 'created_at' | 'updated_at'>): Promise<SecurityChecklistItem> {
   const { data, error } = await supabase
     .from('security_checklist')
-    .insert([item as any]) // Cast to any to avoid type issues
+    .insert([item])
     .select()
     .single();
     
   if (error) throw new Error(error.message);
   
-  return data as unknown as SecurityChecklistItem;
+  return data as SecurityChecklistItem;
 }
