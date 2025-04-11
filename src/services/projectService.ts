@@ -65,7 +65,7 @@ export async function getTeamMembers(projectId: string) {
 
   if (error) throw new Error(error.message);
   
-  return data;
+  return data as any[];
 }
 
 // Function to get security checklist for a project
@@ -77,7 +77,7 @@ export async function getSecurityChecklist(projectId: string) {
 
   if (error) throw new Error(error.message);
   
-  return data;
+  return data as any[];
 }
 
 // Function to get PAC history for a project
@@ -95,5 +95,5 @@ export async function getPacHistory(projectId: string) {
 
   if (error) throw new Error(error.message);
   
-  return data;
+  return data as any[];
 }

@@ -20,7 +20,8 @@ export async function getUsers(): Promise<User[]> {
     
   if (error) throw new Error(error.message);
   
-  return data as User[];
+  // Cast to User[] to ensure type compatibility
+  return data as unknown as User[];
 }
 
 export async function getUserById(id: string): Promise<User> {
@@ -32,17 +33,19 @@ export async function getUserById(id: string): Promise<User> {
     
   if (error) throw new Error(error.message);
   
-  return data as User;
+  // Cast to User to ensure type compatibility
+  return data as unknown as User;
 }
 
 export async function getUsersByRole(role: Role): Promise<User[]> {
   const { data, error } = await supabase
     .from('users')
     .select('*')
-    .eq('role', role)
+    .eq('role', role as string) // Cast role to string to avoid type issues
     .order('name', { ascending: true });
     
   if (error) throw new Error(error.message);
   
-  return data as User[];
+  // Cast to User[] to ensure type compatibility
+  return data as unknown as User[];
 }
