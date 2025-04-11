@@ -1,73 +1,84 @@
-# Welcome to your Lovable project
 
-## Project info
+# RoleCraft Nexus
 
-**URL**: https://lovable.dev/projects/15ca4f7a-e11e-4765-9ff6-b255ecf12a06
+A full-stack project management application with role-based access control, built with React and TypeScript.
 
-## How can I edit this code?
+## Tech Stack
 
-There are several ways of editing your application.
+### Frontend
+- React with TypeScript
+- React Router for navigation
+- Tailwind CSS for styling
+- shadcn/ui component library
+- Tanstack Query for data fetching and caching
 
-**Use Lovable**
+### Backend (Integration Ready)
+- Supabase for database, authentication and backend services
+- Azure AD OAuth integration (via next-auth)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/15ca4f7a-e11e-4765-9ff6-b255ecf12a06) and start prompting.
+## Project Structure
 
-Changes made via Lovable will be committed automatically to this repo.
+The project follows a modular architecture:
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+src/
+├── components/       # UI components
+│   ├── layout/       # Layout components
+│   └── ui/           # Shadcn UI components
+├── contexts/         # React contexts
+├── hooks/            # Custom hooks
+├── lib/              # Utility functions
+├── pages/            # Page components
+├── services/         # API services
+└── types/            # TypeScript types
 ```
 
-**Edit a file directly in GitHub**
+## Available Roles
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+The application supports the following user roles:
 
-**Use GitHub Codespaces**
+- **PM (Project Manager)**: Manages projects, tasks, and team assignments
+- **PoM (Portfolio Manager)**: Oversees multiple projects and resource allocation
+- **AVP/VP**: Executive view with strategic insights and reporting
+- **MR (Market Requirements)**: Focuses on market analysis and requirements
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Each role has customized views and permissions throughout the application.
 
-## What technologies are used for this project?
+## Getting Started
 
-This project is built with:
+1. Clone the repository
+2. Install dependencies with `npm install`
+3. Create a `.env` file based on `.env.example`
+4. Start the development server with `npm run dev`
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Environment Variables
 
-## How can I deploy this project?
+Copy `.env.example` to `.env` and fill in the required values:
 
-Simply open [Lovable](https://lovable.dev/projects/15ca4f7a-e11e-4765-9ff6-b255ecf12a06) and click on Share -> Publish.
+- Azure AD credentials for authentication
+- Supabase URL and anonymous key for backend services
+- Additional configuration for the NestJS backend (if deploying separately)
 
-## Can I connect a custom domain to my Lovable project?
+## Connecting to Supabase
 
-Yes it is!
+This project is designed to work with the Supabase native integration in Lovable. To set up the integration:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+1. Click the green Supabase button in the top right of the Lovable interface
+2. Connect to your Supabase project or create a new one
+3. Once connected, the application will have access to:
+   - Database tables
+   - Authentication
+   - Storage
+   - API functions
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## Features
+
+- Role-based access control with Azure AD authentication
+- Project management with task tracking
+- Team collaboration tools
+- Reporting and analytics
+- Responsive design for all devices
+
+## License
+
+This project is licensed under the MIT License.
